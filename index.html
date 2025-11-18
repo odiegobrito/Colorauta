@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Colorauta - Gráfica Online</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    html { scroll-behavior: smooth; }
+    .active { background-color: #374151 !important; }
+  </style>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+
+  <!-- HEADER -->
+  <header class="relative w-full h-[180px] md:h-[250px] text-white shadow-md overflow-hidden">
+
+    <div class="absolute inset-0 bg-cover bg-center"
+         style="background-image: url('/images/capa.png')"></div>
+
+    <div class="relative flex flex-col items-center justify-center h-full px-4 text-center">
+      <img src="images/logo.png" alt="Logo Colorauta"
+           class="w-[140px] md:w-[200px] object-contain">
+      <h1 class="text-lg md:text-2xl font-aesthetic tracking-wide mt-2 mb-0">
+        Tudo que sua marca precisa, com a qualidade que merece.
+      </h1>
+    </div>
+
+  </header>
+
+
+ <!-- ================================
+     SIDEBAR
+================================ -->
+<aside id="sidebar" class="fixed left-0 top-0 w-64 h-full bg-gray-900 text-white p-5 
+       transform -translate-x-full md:translate-x-0 transition">
+    <h2 class="text-xl font-bold mb-4">Categorias</h2>
+
+    <nav class="space-y-3">
+        <a href="#categoria-cartoes"  class="spy block cursor-pointer">Cartões</a>
+        <a href="#categoria-adesivos" class="spy block cursor-pointer">Adesivos</a>
+        <a href="#categoria-banners"  class="spy block cursor-pointer">Banners</a>
+        <a href="#categoria-buques"   class="spy block cursor-pointer">Buquês</a>
+    </nav>
+</aside>
+
+<!-- Botão mobile -->
+<button id="btnMenu" class="md:hidden fixed top-4 left-4 bg-gray-900 text-white p-3 rounded-lg">
+    ☰
+</button>
+
+<!-- ================================
+     CONTEÚDO PRINCIPAL
+================================ -->
+<main class="md:ml-64 p-6">
+
+    <!-- Containers das categorias (todos iniciam ocultos) -->
+    <section id="categoria-cartoes">
+        <div id="produtos-cartoes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
+    </section>
+
+    <section id="categoria-adesivos">
+        <div id="produtos-adesivos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
+    </section>
+
+    <section id="categoria-banners">
+        <div id="produtos-banners" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
+    </section>
+
+    <section id="categoria-buques">
+        <div id="produtos-buques" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
+    </section>
+
+
+</main>
+
+
+
+  <!-- RESUMO -->
+  <section id="box-resumo" class="max-w-4xl mx-auto my-10 bg-white shadow-lg p-6 rounded-2xl text-center hidden">
+
+    <h2 class="text-2xl font-semibold mb-4">🧾 Resumo do Pedido</h2>
+
+    <div id="resumo" class="text-left mb-4 text-gray-700 space-y-2"></div>
+
+    <p class="text-lg font-bold">
+      Total: R$ <span id="total">0,00</span>
+    </p>
+
+    <button onclick="enviarWhatsApp()"
+            class="mt-5 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold">
+      Enviar Pedido
+    </button>
+
+</section>
+
+
+
+  <!-- CTA DESIGNER -->
+  <section class="max-w-3xl mx-auto my-12 px-5 py-10 text-center text-white
+                  rounded-2xl shadow-lg bg-gradient-to-r from-purple-600 to-gray-900">
+
+    <h2 class="text-2xl font-bold mb-3">Está procurando um designer?</h2>
+
+    <p class="text-lg opacity-90 mb-6">
+      A Colorauta faz pra você — criações profissionais, rápidas e com qualidade de gráfica.
+    </p>
+
+    <a href="https://wa.me/5521986473364?text=Olá!%20Gostaria%20de%20fazer%20um%20projeto%20com%20a%20Colorauta!"
+       target="_blank"
+       class="bg-white text-pink-700 font-semibold px-6 py-3 rounded-full shadow hover:bg-pink-100 transition">
+      💬 Entrar em Contato
+    </a>
+
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-gray-300 text-center border-t border-pink-600 py-4 mt-10">
+    <p class="text-sm font-medium">© 2025 Colorauta — CNPJ: 57.316.183/0001-76</p>
+    <p class="text-xs opacity-80 mt-1">Todos os direitos reservados.</p>
+  </footer>
+
+
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
+
+</body>
+</html>

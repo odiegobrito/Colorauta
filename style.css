@@ -1,0 +1,45 @@
+@font-face {
+    font-family: 'AestheticViolet';
+    src: url('fontes/AestheticViolet.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  .font-aesthetic {
+    font-family: 'AestheticViolet', sans-serif;
+  }
+
+  header {
+  background-image: url('/images/capa.png');
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover; /* cobre toda a largura do header */
+  height: 250px; /* desktop */
+}
+
+@media (max-width: 768px) {
+  header {
+    height: 150px; 
+  }
+
+  header img {
+    width: 140px; 
+    margin-top: 20px;
+  }
+
+  header h1 {
+    font-size: 1rem; 
+    padding: 0 10px;
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+.spy.active {
+  background-color: #4b5563;
+  color: white;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+}
