@@ -18,7 +18,7 @@ const produtos = [
   },
   {
     nome: "Panfleto",
-    categoria: "cartoes",
+    categoria: "panfletos",
     imagem: "images/panfleto.png",
     precos: {
       frente: {100: 80, 250: 100, 500: 120, 1000: 150},
@@ -61,7 +61,8 @@ const mapCategorias = {
   cartoes: "produtos-cartoes",
   adesivos: "produtos-adesivos",
   banners: "produtos-banners",
-  buques: "produtos-buques"
+  buques: "produtos-buques",
+  panfletos: "produtos-panfletos"
 };
 
 /* -----------------------------
