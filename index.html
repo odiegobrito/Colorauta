@@ -1,382 +1,864 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Colorauta – Gráfica & Marketplace</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js" defer></script>
-  <script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        fontFamily: {
-          pacifico: ['Pacifico', 'cursive'],
-          nunito: ['Nunito', 'sans-serif'],
-        }
-      }
-    }
-  }
-</script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body x-data="store()" @keydown.escape="cartOpen = false">
-
-  <!-- TOAST -->
-  <div x-show="toast.show" x-cloak class="toast fixed bottom-6 left-1/2 -translate-x-1/2 z-[9998] bg-[#1a1a2e] border border-purple-500/40 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-medium" style="display:none">
-    <span class="text-2xl">🛒</span>
-    <span x-text="toast.msg"></span>
-  </div>
-
-  <!-- CART OVERLAY -->
-  <div x-show="cartOpen" x-cloak @click="cartOpen=false" class="drawer-overlay fixed inset-0 bg-black/60 backdrop-blur-sm z-40" style="display:none" :style="cartOpen ? 'opacity:1' : 'opacity:0'"></div>
-
-  <!-- CART DRAWER -->
-  <aside x-show="cartOpen" x-cloak class="drawer fixed top-0 right-0 h-full w-full max-w-sm bg-[#0f0f1a] border-l border-white/10 z-50 flex flex-col shadow-2xl" style="display:none" :style="cartOpen ? 'transform:translateX(0)' : 'transform:translateX(100%)'">
-    <div class="flex items-center justify-between p-5 border-b border-white/10">
-      <h2 class="text-xl font-bold brand grad-text">Seu Carrinho</h2>
-      <button @click="cartOpen=false" class="text-white/50 hover:text-white text-2xl leading-none">✕</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colorauta - Gráfica e Papelaria</title>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js"
+      defer
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="icon" href="images/logo.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=20260829-2047" />
+    <script src="backend/supabase-config.js?v=20260829-2102"></script>
+    <script src="backend/supabase-api.js?v=20260829-2102"></script>
+  </head>
+  <body
+    x-data="store()"
+    @keydown.escape="cartOpen ? cartOpen = false : closeProductModal()"
+  >
+    <!-- TOAST -->
+    <div
+      x-show="toast.show"
+      x-cloak
+      class="toast fixed bottom-6 left-1/2 -translate-x-1/2 z-[9998] bg-[#171717] border border-black/10 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-semibold"
+      style="display: none"
+    >
+      <span class="text-2xl">🛒</span>
+      <span x-text="toast.msg"></span>
     </div>
-    <div class="flex-1 overflow-y-auto p-5 space-y-4">
-      <template x-if="cart.length === 0">
-        <div class="text-center text-white/30 mt-16">
-          <div class="text-6xl mb-4">🛒</div>
-          <p class="font-medium">Carrinho vazio</p>
-          <p class="text-sm mt-1">Adicione produtos para começar</p>
-        </div>
-      </template>
-      <template x-for="(item, i) in cart" :key="i">
-        <div class="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/8">
-          <div class="w-16 h-16 rounded-xl flex items-center justify-center text-3xl flex-shrink-0" :style="`background:${item.color}22`" x-text="item.emoji"></div>
-          <div class="flex-1 min-w-0">
-            <p class="font-semibold text-sm truncate" x-text="item.name"></p>
-            <p class="text-white/40 text-xs mt-0.5" x-text="item.variant || ''"></p>
-            <p class="text-purple-300 font-bold text-sm mt-1" x-text="formatPrice(item.price)"></p>
-          </div>
-          <div class="flex items-center gap-2">
-            <button @click="decreaseQty(i)" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-bold transition">−</button>
-            <span class="w-6 text-center text-sm font-bold" x-text="item.qty"></span>
-            <button @click="increaseQty(i)" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-bold transition">+</button>
-          </div>
-          <button @click="removeItem(i)" class="text-white/20 hover:text-red-400 text-lg ml-1 transition">🗑</button>
-        </div>
-      </template>
-    </div>
-    <div class="p-5 border-t border-white/10 space-y-4">
-      <div class="flex justify-between items-center">
-        <span class="text-white/60 font-medium">Subtotal</span>
-        <span class="text-2xl font-black brand grad-text" x-text="formatPrice(cartTotal)"></span>
-      </div>
-      <button @click="finalizarPedido()" :disabled="cart.length===0" class="btn-primary w-full py-4 text-white text-base flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
-        <span>📲</span> Finalizar pelo WhatsApp
-      </button>
-      <p class="text-center text-white/30 text-xs">Você será redirecionado para o WhatsApp da loja</p>
-    </div>
-  </aside>
 
-  <!-- ══════════════ NAVBAR ══════════════ -->
-  <nav class="fixed top-0 left-0 right-0 z-30 px-4 sm:px-8">
-    <div class="max-w-7xl mx-auto flex items-center justify-between h-16">
-      <!-- Logo -->
-      <a href="#" class="flex items-center">
-        <img src="images/Logo 1.png" alt="Colorauta - Gráfica & Papelaria" class="h-14 w-auto" style="filter: drop-shadow(0 0 10px rgba(255,107,0,.55)) drop-shadow(0 0 22px rgba(123,47,255,.45))"/>
-      </a>
+    <!-- CART OVERLAY -->
+    <div
+      x-show="cartOpen"
+      x-cloak
+      @click="cartOpen=false"
+      class="drawer-overlay fixed inset-0 bg-black/45 backdrop-blur-sm z-40"
+      style="display: none"
+      :style="cartOpen ? 'opacity:1' : 'opacity:0'"
+    ></div>
 
-      <!-- Nav Links Desktop -->
-      <div class="hidden md:flex items-center gap-6 text-sm font-medium text-white/60">
-        <a href="#produtos" class="hover:text-white transition">Produtos</a>
-        <a href="#categorias" class="hover:text-white transition">Categorias</a>
-        <a href="#sobre" class="hover:text-white transition">Sobre</a>
-        <a href="#contato" class="hover:text-white transition">Contato</a>
-      </div>
-
-      <!-- Cart -->
-      <div class="flex items-center gap-3">
-        <button @click="cartOpen=true" class="relative p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
-          <span class="text-xl">🛒</span>
-          <span x-show="cart.length > 0" class="cart-badge" x-text="totalItems">0</span>
+    <!-- CART DRAWER -->
+    <aside
+      x-show="cartOpen"
+      x-cloak
+      class="drawer fixed top-0 right-0 h-full w-full max-w-sm bg-white border-l border-black/10 z-50 flex flex-col shadow-2xl"
+      style="display: none"
+      :style="cartOpen ? 'transform:translateX(0)' : 'transform:translateX(100%)'"
+    >
+      <div
+        class="flex items-center justify-between p-5 border-b border-black/10"
+      >
+        <h2 class="text-xl font-extrabold brand text-neutral-950">
+          Seu Carrinho
+        </h2>
+        <button
+          @click="cartOpen=false"
+          class="text-neutral-400 hover:text-neutral-950 text-2xl leading-none"
+        >
+          ✕
         </button>
-        <a href="https://wa.me/5521999999999" target="_blank" class="hidden sm:flex btn-primary px-4 py-2 text-white text-sm items-center gap-2">
-          <span>📲</span> WhatsApp
-        </a>
       </div>
-    </div>
-  </nav>
-
-  <!-- ══════════════ HERO ══════════════ -->
-  <section class="hero-bg relative min-h-screen flex items-center pt-16 overflow-hidden">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-
-    <div class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center w-full">
-      <div class="space-y-6 relative z-10">
-        <div class="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2 text-sm text-purple-300 font-medium">
-          <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block"></span>
-          Gráfica & Marketplace Online
+      <div class="flex-1 overflow-y-auto p-5 space-y-4">
+        <template x-if="cart.length === 0">
+          <div class="text-center text-neutral-400 mt-16">
+            <div class="text-6xl mb-4">🛒</div>
+            <p class="font-medium">Carrinho vazio</p>
+            <p class="text-sm mt-1">Adicione produtos para começar</p>
+          </div>
+        </template>
+        <template x-for="(item, i) in cart" :key="i">
+          <div
+            class="flex items-center gap-4 bg-neutral-50 rounded-xl p-4 border border-neutral-200"
+          >
+            <div
+              class="w-16 h-16 rounded-lg overflow-hidden flex items-center justify-center text-3xl flex-shrink-0 bg-white"
+            >
+              <img
+                x-show="item.image"
+                :src="item.image"
+                :alt="item.name"
+                class="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+              <span x-show="!item.image" x-text="item.emoji"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p
+                class="font-bold text-sm truncate text-neutral-950"
+                x-text="item.name"
+              ></p>
+              <p
+                class="text-neutral-500 text-xs mt-0.5"
+                x-text="item.variant || ''"
+              ></p>
+              <p
+                class="text-brand font-extrabold text-sm mt-1"
+                x-text="formatPrice(item.price)"
+              ></p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                @click="decreaseQty(i)"
+                class="w-7 h-7 rounded-lg bg-white border border-neutral-200 hover:border-neutral-900 text-xs font-bold transition"
+              >
+                −
+              </button>
+              <span
+                class="w-6 text-center text-sm font-bold text-neutral-950"
+                x-text="item.qty"
+              ></span>
+              <button
+                @click="increaseQty(i)"
+                class="w-7 h-7 rounded-lg bg-white border border-neutral-200 hover:border-neutral-900 text-xs font-bold transition"
+              >
+                +
+              </button>
+            </div>
+            <button
+              @click="removeItem(i)"
+              class="text-neutral-300 hover:text-red-500 text-lg ml-1 transition"
+            >
+              🗑
+            </button>
+          </div>
+        </template>
+      </div>
+      <div class="p-5 border-t border-black/10 space-y-4 bg-neutral-50">
+        <div class="flex justify-between items-center">
+          <span class="text-neutral-500 font-semibold">Subtotal</span>
+          <span
+            class="text-2xl font-black brand text-neutral-950"
+            x-text="formatPrice(cartTotal)"
+          ></span>
         </div>
-        <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold leading-tight brand">
-          Cores que<br/><span class="grad-text">falam por você</span>
-        </h1>
-        <p class="text-white/50 text-lg max-w-md leading-relaxed">
-          Impressão de alta qualidade, banners, adesivos, cartões e muito mais. Peça pelo site e finalize direto no WhatsApp!
+        <button
+          @click="finalizarPedido()"
+          :disabled="cart.length===0"
+          class="btn-primary w-full py-4 text-white text-base flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <span>📲</span> Finalizar pelo WhatsApp
+        </button>
+        <p class="text-center text-neutral-400 text-xs">
+          Você será redirecionado para o WhatsApp da loja
         </p>
-        <div class="flex flex-wrap gap-4">
-          <a href="#produtos" class="btn-primary px-8 py-4 text-white text-base flex items-center gap-2">
-            Ver Produtos <span>→</span>
-          </a>
-          <a href="https://wa.me/5521999999999" target="_blank" class="px-8 py-4 rounded-xl border border-white/20 text-white/80 hover:bg-white/5 transition font-semibold flex items-center gap-2">
-            <span>💬</span> Falar Conosco
-          </a>
+      </div>
+    </aside>
+
+    <!-- PRODUCT DETAILS MODAL -->
+    <div
+      x-show="productModalOpen"
+      x-cloak
+      @click="closeProductModal()"
+      class="modal-overlay fixed inset-0 z-[60] flex items-center justify-center bg-black/45 px-4 py-6"
+      style="display: none"
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="transition ease-in duration-150"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+    >
+      <article
+        x-show="selectedProduct"
+        @click.stop
+        role="dialog"
+        aria-modal="true"
+        :aria-label="selectedProduct ? selectedProduct.name : 'Detalhes do produto'"
+        class="product-modal w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 translate-y-3 scale-[.98]"
+        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+        x-transition:leave-end="opacity-0 translate-y-3 scale-[.98]"
+      >
+        <template x-if="selectedProduct">
+          <div class="modal-layout grid md:grid-cols-[0.95fr_1.05fr]">
+            <div class="modal-media relative min-h-[260px] bg-neutral-100">
+              <img
+                x-show="selectedProduct.image"
+                :src="selectedProduct.image"
+                :alt="selectedProduct.name"
+                class="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+              <span
+                x-show="!selectedProduct.image"
+                class="absolute inset-0 flex items-center justify-center text-8xl"
+                x-text="selectedProduct.emoji"
+              ></span>
+              <span
+                x-show="selectedProduct.badge"
+                class="card-badge absolute left-4 top-4 bg-neutral-950 text-white"
+                x-text="selectedProduct.badge"
+              ></span>
+            </div>
+            <div class="modal-content flex max-h-[82vh] flex-col overflow-y-auto p-6 sm:p-8">
+              <div class="mb-5 flex items-start justify-between gap-4">
+                <div>
+                  <p
+                    class="mb-2 text-xs font-extrabold uppercase tracking-widest text-neutral-400"
+                    x-text="selectedProduct.category"
+                  ></p>
+                  <h2
+                    class="brand text-2xl font-extrabold leading-tight text-neutral-950 sm:text-3xl"
+                    x-text="selectedProduct.name"
+                  ></h2>
+                </div>
+                <button
+                  type="button"
+                  @click="closeProductModal()"
+                  class="icon-button flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-neutral-200 bg-white text-xl text-neutral-700"
+                  aria-label="Fechar detalhes do produto"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <p
+                class="mb-5 text-sm leading-relaxed text-neutral-600"
+                x-text="selectedProduct.description"
+              ></p>
+
+              <div
+                class="modal-price mb-5 rounded-xl border border-neutral-200 bg-neutral-50 p-4"
+              >
+                <p
+                  class="text-xs font-bold uppercase tracking-widest text-neutral-500"
+                >
+                  Valor
+                </p>
+                <p
+                  class="brand mt-1 text-3xl font-black text-brand"
+                  x-text="formatPrice(variantPrice(selectedProduct))"
+                ></p>
+                <p
+                  class="mt-1 text-sm font-semibold text-neutral-500"
+                  x-text="selectedProduct.selectedVariant || 'Produto personalizado'"
+                ></p>
+              </div>
+
+              <div
+                x-show="selectedProduct.variants && selectedProduct.variants.length"
+                class="mb-5"
+              >
+                <p
+                  class="mb-2 text-xs font-extrabold uppercase tracking-widest text-neutral-400"
+                >
+                  Opções
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  <template
+                    x-for="v in selectedProduct.variants"
+                    :key="v.label"
+                  >
+                    <button
+                      type="button"
+                      @click="selectedProduct.selectedVariant = v.label"
+                      class="variant-chip rounded-lg border px-3 py-2 text-xs font-bold transition"
+                      :class="selectedProduct.selectedVariant === v.label ? 'border-neutral-950 bg-neutral-950 text-white' : 'border-neutral-200 text-neutral-500 hover:border-neutral-950'"
+                      x-text="v.label"
+                    ></button>
+                  </template>
+                </div>
+              </div>
+
+              <dl class="modal-info mb-5 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <dt>Entrega estimada</dt>
+                  <dd
+                    x-text="selectedProduct.deliveryTime || 'Sob consulta'"
+                  ></dd>
+                </div>
+                <div>
+                  <dt>Disponibilidade</dt>
+                  <dd
+                    x-text="selectedProduct.availability || 'Disponível para orçamento'"
+                  ></dd>
+                </div>
+              </dl>
+
+              <div
+                x-show="selectedProduct.details && selectedProduct.details.length"
+                class="mb-6"
+              >
+                <p
+                  class="mb-2 text-xs font-extrabold uppercase tracking-widest text-neutral-400"
+                >
+                  Informações adicionais
+                </p>
+                <ul class="modal-list space-y-2 text-sm text-neutral-600">
+                  <template
+                    x-for="detail in selectedProduct.details"
+                    :key="detail"
+                  >
+                    <li x-text="detail"></li>
+                  </template>
+                </ul>
+              </div>
+
+              <div class="modal-actions mt-auto flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  @click="addToCart(selectedProduct); closeProductModal()"
+                  class="btn-primary modal-action-primary inline-flex items-center gap-2 px-6 py-3 text-white"
+                >
+                  <span>+</span> Adicionar ao carrinho
+                </button>
+                <button
+                  type="button"
+                  @click="closeProductModal()"
+                  class="secondary-link modal-action-secondary inline-flex items-center gap-2 rounded-xl border border-neutral-300 px-6 py-3 font-bold text-neutral-800 transition"
+                >
+                  Continuar vendo
+                </button>
+              </div>
+            </div>
+          </div>
+        </template>
+      </article>
+    </div>
+
+    <!-- ══════════════ NAVBAR ══════════════ -->
+    <nav class="fixed top-0 left-0 right-0 z-30 px-4 sm:px-8">
+      <div class="max-w-7xl mx-auto flex items-center justify-between h-20">
+        <!-- Logo -->
+        <a href="#" class="logo-link header-brand flex items-center">
+          <img
+            src="images/Logo 1.png"
+            alt="Colorauta - Gráfica & Papelaria"
+            class="h-16 w-auto"
+            decoding="async"
+          />
+          <span class="header-brand-copy">
+            <strong>Colorauta</strong>
+            <small>Gráfica e Papelaria</small>
+          </span>
+        </a>
+
+        <!-- Nav Links Desktop -->
+        <div
+          class="hidden md:flex items-center gap-6 text-sm font-bold text-neutral-600"
+        >
+          <a href="#produtos" class="nav-link">Produtos</a>
+          <a href="#categorias" class="nav-link">Categorias</a>
+          <a href="#contato" class="nav-link">Contato</a>
         </div>
-        <!-- Stats -->
-        <div class="flex gap-8 pt-4">
-          <div>
-            <p class="text-3xl font-black brand grad-text">+2k</p>
-            <p class="text-white/40 text-sm">Clientes</p>
-          </div>
-          <div class="w-px bg-white/10"></div>
-          <div>
-            <p class="text-3xl font-black brand grad-text-2">+50</p>
-            <p class="text-white/40 text-sm">Produtos</p>
-          </div>
-          <div class="w-px bg-white/10"></div>
-          <div>
-            <p class="text-3xl font-black brand" style="background:linear-gradient(90deg,#FFD600,#FF6B00);-webkit-background-clip:text;-webkit-text-fill-color:transparent">5★</p>
-            <p class="text-white/40 text-sm">Avaliação</p>
-          </div>
+
+        <!-- Cart -->
+        <div class="flex items-center gap-3">
+          <button
+            @click="cartOpen=true"
+            class="icon-button relative p-3 rounded-xl bg-white border border-neutral-200 shadow-sm transition"
+          >
+            <span class="text-xl">🛒</span>
+            <span
+              x-show="cart.length > 0"
+              class="cart-badge"
+              x-text="totalItems"
+              >0</span
+            >
+          </button>
+          <a
+            href="https://wa.me/5521986473364"
+            target="_blank"
+            class="hidden sm:flex btn-primary px-4 py-2 text-white text-sm items-center gap-2"
+          >
+            <span>📲</span> WhatsApp
+          </a>
         </div>
       </div>
+    </nav>
 
-      <!-- Hero Visual — Product Carousel -->
-      <div class="relative flex justify-center items-center">
-        <div x-data="{
+    <!-- ══════════════ HERO ══════════════ -->
+    <section
+      class="hero-bg relative min-h-[82vh] flex items-center pt-20 overflow-hidden"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-[0.9fr_1.1fr] gap-12 items-center w-full"
+      >
+        <div class="space-y-6 relative z-10">
+          <div
+            class="inline-flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-4 py-2 text-sm text-neutral-600 font-bold shadow-sm"
+          >
+            <span class="w-2 h-2 rounded-full bg-[#11a36a] inline-block"></span>
+            Catálogo online de gráfica e papelaria
+          </div>
+          <h1
+            class="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight brand text-neutral-950"
+          >
+            Impressos, papelaria e brindes em um catálogo simples de pedir.
+          </h1>
+          <p class="text-neutral-600 text-lg max-w-xl leading-relaxed">
+            Escolha o produto, selecione o acabamento, adicione ao carrinho e
+            finalize o orçamento diretamente pelo WhatsApp da Colorauta.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a
+              href="#categorias"
+              class="btn-primary px-8 py-4 text-white text-base flex items-center gap-2"
+            >
+              Ver Produtos <span>→</span>
+            </a>
+            <a
+              href="https://wa.me/5521986473364"
+              target="_blank"
+              class="secondary-link px-8 py-4 rounded-xl border border-neutral-300 text-neutral-800 transition font-bold flex items-center gap-2 bg-white/70"
+            >
+              <span>💬</span> Falar Conosco
+            </a>
+          </div>
+          <!-- Stats -->
+          <div class="flex flex-wrap gap-4 pt-4">
+            <div class="stat-card">
+              <p class="text-3xl font-black brand text-neutral-950">+2k</p>
+              <p class="text-neutral-500 text-sm font-semibold">Clientes</p>
+            </div>
+            <div class="stat-card">
+              <p class="text-3xl font-black brand text-neutral-950">+50</p>
+              <p class="text-neutral-500 text-sm font-semibold">Produtos</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Visual — Product Carousel -->
+        <div class="relative flex justify-center items-center">
+          <div
+            x-data="{
           slide: 0,
           t: null,
-          next() { this.slide = (this.slide + 1) % products.length; this.reset() },
-          prev() { this.slide = (this.slide - 1 + products.length) % products.length; this.reset() },
+          next() { if (!bestSellerProducts.length) return; this.slide = (this.slide + 1) % bestSellerProducts.length; this.reset() },
+          prev() { if (!bestSellerProducts.length) return; this.slide = (this.slide - 1 + bestSellerProducts.length) % bestSellerProducts.length; this.reset() },
           go(i)  { this.slide = i; this.reset() },
-          reset(){ clearInterval(this.t); this.t = setInterval(() => this.slide = (this.slide + 1) % products.length, 3800) }
-        }" x-init="reset()" class="relative w-full max-w-lg">
+          reset(){ clearInterval(this.t); if (this.slide >= bestSellerProducts.length) this.slide = 0; if (!bestSellerProducts.length) return; this.t = setInterval(() => this.slide = (this.slide + 1) % bestSellerProducts.length, 3800) }
+        }"
+            x-init="reset()"
+            @products-loaded.window="reset()"
+            class="relative w-full max-w-lg"
+          >
+            <!-- Container dos slides (altura fixa para estabilidade) -->
+            <div
+              class="carousel-shell relative rounded-2xl overflow-hidden bg-white border border-neutral-200 shadow-xl"
+              style="height: 430px"
+            >
+              <template x-for="(p, i) in bestSellerProducts" :key="p.id">
+                <div
+                  x-show="slide === i"
+                  x-transition:enter="transition ease-out duration-500"
+                  x-transition:enter-start="opacity-0 scale-95"
+                  x-transition:enter-end="opacity-100 scale-100"
+                  x-transition:leave="transition ease-in duration-300"
+                  x-transition:leave-start="opacity-100 scale-100"
+                  x-transition:leave-end="opacity-0 scale-95"
+                  class="absolute inset-0 rounded-2xl z-10 bg-white"
+                >
+                  <!-- Área emoji -->
+                  <div
+                    class="h-60 flex items-center justify-center relative overflow-hidden rounded-t-2xl bg-neutral-100"
+                  >
+                    <img
+                      x-show="p.image"
+                      :src="p.image"
+                      :alt="p.name"
+                      class="absolute inset-0 h-full w-full object-cover"
+                      loading="eager"
+                      decoding="async"
+                    />
+                    <span
+                      x-show="!p.image"
+                      class="text-8xl relative z-10 select-none"
+                      x-text="p.emoji"
+                    ></span>
+                    <div
+                      x-show="p.badge"
+                      class="card-badge absolute top-3 left-3 text-white bg-neutral-950"
+                      x-text="p.badge"
+                    ></div>
+                    <!-- Índice do slide -->
+                    <div
+                      class="absolute bottom-3 right-4 text-white bg-black/50 text-xs font-bold tabular-nums rounded-full px-3 py-1"
+                      x-text="`${i+1} / ${bestSellerProducts.length}`"
+                    ></div>
+                  </div>
 
-          <!-- Ambient glow reativo -->
-          <div class="absolute -inset-10 rounded-full blur-3xl opacity-40 pointer-events-none transition-all duration-1000"
-               :style="`background: radial-gradient(ellipse, ${products[slide].color}55 0%, ${products[slide].color2}33 55%, transparent 75%)`"></div>
-
-          <!-- Container dos slides (altura fixa para estabilidade) -->
-          <div class="relative rounded-3xl overflow-hidden" style="height:390px;">
-            <template x-for="(p, i) in products" :key="p.id">
-              <div x-show="slide === i"
-                   x-transition:enter="transition ease-out duration-500"
-                   x-transition:enter-start="opacity-0 scale-95"
-                   x-transition:enter-end="opacity-100 scale-100"
-                   x-transition:leave="transition ease-in duration-300"
-                   x-transition:leave-start="opacity-100 scale-100"
-                   x-transition:leave-end="opacity-0 scale-95"
-                   class="absolute inset-0 rounded-3xl border border-white/10 z-10"
-                   :style="`background: linear-gradient(160deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); box-shadow: 0 24px 80px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.08)`">
-
-                <!-- Área emoji -->
-                <div class="h-52 flex items-center justify-center relative overflow-hidden rounded-t-3xl"
-                     :style="`background: linear-gradient(135deg, ${p.color}28, ${p.color2}18)`">
-                  <div class="absolute inset-0 opacity-20"
-                       :style="`background: radial-gradient(circle at 60% 35%, ${p.color}, transparent 65%)`"></div>
-                  <span class="text-8xl relative z-10 select-none"
-                        x-text="p.emoji"
-                        style="filter: drop-shadow(0 8px 22px rgba(0,0,0,.45))"></span>
-                  <div x-show="p.badge"
-                       class="card-badge absolute top-3 left-3 text-white"
-                       :style="`background: linear-gradient(135deg, ${p.color}, ${p.color2})`"
-                       x-text="p.badge"></div>
-                  <!-- Índice do slide -->
-                  <div class="absolute bottom-3 right-4 text-white/30 text-xs font-bold tabular-nums"
-                       x-text="`${i+1} / ${products.length}`"></div>
-                </div>
-
-                <!-- Informações do produto -->
-                <div class="p-5 space-y-1.5">
-                  <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest" x-text="p.category"></p>
-                  <p class="text-xl font-bold text-white leading-tight" x-text="p.name"></p>
-                  <p class="text-white/40 text-xs leading-relaxed line-clamp-2" x-text="p.description"></p>
-                  <div class="flex items-center justify-between pt-2">
-                    <div>
-                      <p x-show="p.oldPrice" class="text-white/30 text-xs line-through" x-text="formatPrice(p.oldPrice)"></p>
-                      <p class="text-xl font-black"
-                         :style="`background: linear-gradient(90deg, ${p.color}, ${p.color2}); -webkit-background-clip: text; -webkit-text-fill-color: transparent`"
-                         x-text="formatPrice(variantPrice(p))"></p>
+                  <!-- Informações do produto -->
+                  <div class="p-5 space-y-1.5">
+                    <p
+                      class="text-neutral-400 text-[10px] font-extrabold uppercase tracking-widest"
+                      x-text="p.category"
+                    ></p>
+                    <p
+                      class="text-xl font-extrabold text-neutral-950 leading-tight"
+                      x-text="p.name"
+                    ></p>
+                    <p
+                      class="text-neutral-500 text-xs leading-relaxed line-clamp-2"
+                      x-text="p.description"
+                    ></p>
+                    <div class="flex items-center justify-between pt-2">
+                      <div>
+                        <p
+                          x-show="p.oldPrice"
+                          class="text-neutral-400 text-xs line-through"
+                          x-text="formatPrice(p.oldPrice)"
+                        ></p>
+                        <p
+                          class="text-xl font-black text-brand"
+                          x-text="formatPrice(variantPrice(p))"
+                        ></p>
+                      </div>
+                      <button
+                        @click.stop="openProductModal(p)"
+                        class="btn-primary px-4 py-2.5 text-white text-sm flex items-center gap-1.5"
+                      >
+                        <span>+</span> Escolher
+                      </button>
                     </div>
-                    <button @click.stop="addToCart(p)"
-                            class="btn-primary px-4 py-2.5 text-white text-sm flex items-center gap-1.5">
-                      <span>+</span> Adicionar
-                    </button>
                   </div>
                 </div>
-              </div>
-            </template>
-          </div>
-
-          <!-- Setas de navegação -->
-          <button @click="prev()"
-            class="absolute -left-4 top-[195px] -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-white/15 border border-white/15 flex items-center justify-center text-white text-xl leading-none transition-all backdrop-blur-sm z-20 shadow-lg select-none">
-            ‹
-          </button>
-          <button @click="next()"
-            class="absolute -right-4 top-[195px] -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-white/15 border border-white/15 flex items-center justify-center text-white text-xl leading-none transition-all backdrop-blur-sm z-20 shadow-lg select-none">
-            ›
-          </button>
-
-          <!-- Dots indicadores -->
-          <div class="flex justify-center gap-1.5 mt-4 flex-wrap">
-            <template x-for="(p, i) in products" :key="i">
-              <button @click="go(i)"
-                class="rounded-full h-2 transition-all duration-300"
-                :class="slide === i ? 'w-5' : 'w-2 bg-white/25 hover:bg-white/50'"
-                :style="slide === i ? `background: linear-gradient(90deg, ${products[slide].color}, ${products[slide].color2})` : ''">
-              </button>
-            </template>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════════ MARQUEE ══════════════ -->
-  <div class="py-5 border-y border-white/5 overflow-hidden bg-black/20">
-    <div class="marquee-track text-white/20 font-black brand text-sm tracking-widest uppercase">
-      <span>Banners</span><span>•</span><span>Adesivos</span><span>•</span><span>Cartões de Visita</span><span>•</span><span>Flyers</span><span>•</span><span>Lonas</span><span>•</span><span>Camisetas</span><span>•</span><span>Canecas</span><span>•</span><span>Embalagens</span><span>•</span><span>Folders</span><span>•</span>
-      <span>Banners</span><span>•</span><span>Adesivos</span><span>•</span><span>Cartões de Visita</span><span>•</span><span>Flyers</span><span>•</span><span>Lonas</span><span>•</span><span>Camisetas</span><span>•</span><span>Canecas</span><span>•</span><span>Embalagens</span><span>•</span><span>Folders</span><span>•</span>
-    </div>
-  </div>
-
-  <!-- ══════════════ CATEGORIES ══════════════ -->
-  <section id="categorias" class="py-16 px-6 max-w-7xl mx-auto">
-    <div class="text-center mb-10">
-      <p class="text-white/40 text-sm font-medium uppercase tracking-widest mb-2">Navegue por</p>
-      <h2 class="text-4xl font-extrabold brand grad-text">Categorias</h2>
-    </div>
-    <div class="flex flex-wrap justify-center gap-3">
-      <button @click="activeCategory='Todos'" :class="activeCategory==='Todos' ? 'active' : ''" class="cat-chip">Todos</button>
-      <template x-for="cat in categories" :key="cat">
-        <button @click="activeCategory=cat" :class="activeCategory===cat ? 'active' : ''" class="cat-chip" x-text="cat"></button>
-      </template>
-    </div>
-  </section>
-
-  <!-- ══════════════ PRODUCTS ══════════════ -->
-  <section id="produtos" class="pb-20 px-6 max-w-7xl mx-auto">
-    <div class="text-center mb-12">
-      <p class="text-white/40 text-sm font-medium uppercase tracking-widest mb-2">O melhor em impressão</p>
-      <h2 class="text-4xl font-extrabold brand">Nossos <span class="grad-text-2">Produtos</span></h2>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <template x-for="p in filteredProducts" :key="p.id">
-        <div class="card group cursor-default">
-          <!-- Image Area -->
-          <div class="prod-img-wrap" :style="`background: linear-gradient(135deg, ${p.color}18, ${p.color2}18)`">
-            <div class="text-7xl select-none transition-transform duration-300 group-hover:scale-110" x-text="p.emoji"></div>
-            <!-- Badge -->
-            <div x-show="p.badge" class="card-badge absolute top-3 left-3 text-white" :style="`background:linear-gradient(135deg,${p.color},${p.color2})`" x-text="p.badge"></div>
-          </div>
-          <!-- Info -->
-          <div class="p-4 space-y-3">
-            <div>
-              <p class="text-xs text-white/30 font-medium uppercase tracking-wider" x-text="p.category"></p>
-              <h3 class="font-bold text-base mt-0.5 leading-tight" x-text="p.name"></h3>
-              <p class="text-white/40 text-xs mt-1 leading-relaxed" x-text="p.description"></p>
-            </div>
-            <!-- Variants -->
-            <div x-show="p.variants && p.variants.length" class="flex flex-wrap gap-1">
-              <template x-for="v in p.variants" :key="v.label">
-                <button @click="p.selectedVariant = v.label"
-                  class="text-xs px-2 py-1 rounded-lg border transition"
-                  :class="p.selectedVariant === v.label ? 'border-purple-500 bg-purple-500/20 text-purple-300' : 'border-white/10 text-white/40 hover:border-white/30'"
-                  x-text="v.label"></button>
               </template>
             </div>
-            <!-- Price + Cart -->
-            <div class="flex items-center justify-between pt-1">
-              <div>
-                <p x-show="p.oldPrice" class="text-white/30 text-xs line-through" x-text="formatPrice(p.oldPrice)"></p>
-                <p class="font-black text-lg brand" :style="`background:linear-gradient(90deg,${p.color},${p.color2});-webkit-background-clip:text;-webkit-text-fill-color:transparent`" x-text="formatPrice(variantPrice(p))"></p>
-              </div>
-              <button @click="addToCart(p)" class="btn-cart px-4 py-2 text-white text-sm flex items-center gap-1.5">
-                <span>+</span> Adicionar
-              </button>
+
+            <!-- Setas de navegação -->
+            <button
+              @click="prev()"
+              class="arrow-button absolute -left-4 top-[215px] -translate-y-1/2 w-9 h-9 rounded-full bg-white border border-neutral-200 flex items-center justify-center text-neutral-950 text-xl leading-none transition-all z-20 shadow-lg select-none"
+            >
+              ‹
+            </button>
+            <button
+              @click="next()"
+              class="arrow-button absolute -right-4 top-[215px] -translate-y-1/2 w-9 h-9 rounded-full bg-white border border-neutral-200 flex items-center justify-center text-neutral-950 text-xl leading-none transition-all z-20 shadow-lg select-none"
+            >
+              ›
+            </button>
+
+            <!-- Dots indicadores -->
+            <div class="flex justify-center gap-1.5 mt-4 flex-wrap">
+              <template x-for="(p, i) in bestSellerProducts" :key="i">
+                <button
+                  @click="go(i)"
+                  class="rounded-full h-2 transition-all duration-300"
+                  :class="slide === i ? 'w-5 bg-neutral-950' : 'w-2 bg-neutral-300 hover:bg-neutral-500'"
+                ></button>
+              </template>
             </div>
           </div>
         </div>
-      </template>
-    </div>
-  </section>
+      </div>
+    </section>
 
-  <!-- ══════════════ SOBRE ══════════════ -->
-  <section id="sobre" class="py-20 px-6 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-r from-purple-900/10 to-pink-900/10"></div>
-    <div class="max-w-5xl mx-auto relative z-10">
-      <div class="grid md:grid-cols-2 gap-12 items-center">
-        <div class="space-y-5">
-          <p class="text-white/40 text-sm font-medium uppercase tracking-widest">Sobre a Colorauta</p>
-          <h2 class="text-4xl font-extrabold brand">Paixão por <span class="grad-text">impressão</span></h2>
-          <p class="text-white/50 leading-relaxed">Somos uma gráfica apaixonada por cores e qualidade. Com anos de experiência no mercado, entregamos produtos que encantam e comunicam a identidade de cada cliente com vivacidade e precisão.</p>
-          <p class="text-white/50 leading-relaxed">Do cartão de visita ao banner de 10 metros, a Colorauta garante acabamento impecável, cores vibrantes e prazo de entrega que não te deixa na mão.</p>
-          <a href="https://wa.me/5521986473364" target="_blank" class="btn-primary inline-flex items-center gap-2 px-6 py-3 text-white">
-            <span>💬</span> Fale com a gente
-          </a>
+    <!-- ══════════════ MARQUEE ══════════════ -->
+    <div class="py-5 border-y border-neutral-200 overflow-hidden bg-white">
+      <div
+        class="marquee-track text-neutral-400 font-black brand text-sm tracking-widest uppercase"
+      >
+        <span>Banners</span><span>•</span><span>Adesivos</span><span>•</span
+        ><span>Cartões de Visita</span><span>•</span><span>Flyers</span
+        ><span>•</span><span>Lonas</span><span>•</span><span>Camisetas</span
+        ><span>•</span><span>Canecas</span><span>•</span><span>Embalagens</span
+        ><span>•</span><span>Folders</span><span>•</span> <span>Banners</span
+        ><span>•</span><span>Adesivos</span><span>•</span
+        ><span>Cartões de Visita</span><span>•</span><span>Flyers</span
+        ><span>•</span><span>Lonas</span><span>•</span><span>Camisetas</span
+        ><span>•</span><span>Canecas</span><span>•</span><span>Embalagens</span
+        ><span>•</span><span>Folders</span><span>•</span>
+      </div>
+    </div>
+
+    <!-- ══════════════ CATEGORIES ══════════════ -->
+    <section id="categorias" class="py-16 px-6 max-w-7xl mx-auto">
+      <div class="text-center mb-10">
+        <p
+          class="text-neutral-500 text-sm font-bold uppercase tracking-widest mb-2"
+        >
+          Navegue por
+        </p>
+        <h2 class="text-4xl font-extrabold brand text-neutral-950">
+          Categorias
+        </h2>
+      </div>
+      <div class="flex flex-wrap justify-center gap-3">
+        <template x-for="cat in catalogCategories" :key="cat">
+          <button
+            @click="activeCategory=cat"
+            :class="activeCategory===cat ? 'active' : ''"
+            class="cat-chip"
+            x-text="cat"
+          ></button>
+        </template>
+      </div>
+    </section>
+
+    <!-- ══════════════ PRODUCTS ══════════════ -->
+    <section id="produtos" class="pb-20 px-6 max-w-7xl mx-auto">
+      <div
+        class="catalog-heading flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10"
+      >
+        <div>
+          <p
+            class="text-neutral-500 text-sm font-bold uppercase tracking-widest mb-2"
+          >
+            O melhor em impressão
+          </p>
+          <h2 class="text-4xl font-extrabold brand text-neutral-950">
+            Catálogo Colorauta
+          </h2>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:border-purple-500/40 transition">
-            <p class="text-4xl font-black brand grad-text">98%</p>
-            <p class="text-white/40 text-sm mt-1">Satisfação</p>
+        <p class="text-neutral-500 max-w-xl leading-relaxed">
+          Produtos selecionados para comunicação visual, papelaria corporativa,
+          eventos e brindes personalizados.
+        </p>
+      </div>
+
+      <div
+        x-show="productsLoaded && !productsError"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+      >
+        <template x-for="p in filteredProducts" :key="p.id">
+          <div
+            class="card group cursor-pointer"
+            role="button"
+            tabindex="0"
+            @click="openProductModal(p)"
+            @keydown.enter.prevent="openProductModal(p)"
+            @keydown.space.prevent="openProductModal(p)"
+            :aria-label="`Ver detalhes de ${p.name}`"
+          >
+            <!-- Image Area -->
+            <div class="prod-img-wrap bg-neutral-100">
+              <img
+                x-show="p.image"
+                :src="p.image"
+                :alt="p.name"
+                class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
+              <div
+                x-show="!p.image"
+                class="text-7xl select-none transition-transform duration-300 group-hover:scale-110"
+                x-text="p.emoji"
+              ></div>
+              <!-- Badge -->
+              <div
+                x-show="p.badge"
+                class="card-badge absolute top-3 left-3 text-white bg-neutral-950"
+                x-text="p.badge"
+              ></div>
+            </div>
+            <!-- Info -->
+            <div class="p-4 space-y-3">
+              <div>
+                <p
+                  class="text-xs text-neutral-400 font-extrabold uppercase tracking-wider"
+                  x-text="p.category"
+                ></p>
+                <h3
+                  class="font-extrabold text-base mt-0.5 leading-tight text-neutral-950"
+                  x-text="p.name"
+                ></h3>
+                <p
+                  class="text-neutral-500 text-xs mt-1 leading-relaxed"
+                  x-text="p.description"
+                ></p>
+              </div>
+              <!-- Price + Cart -->
+              <div class="flex items-center justify-between pt-1">
+                <div>
+                  <p
+                    x-show="p.oldPrice"
+                    class="text-neutral-400 text-xs line-through"
+                    x-text="formatPrice(p.oldPrice)"
+                  ></p>
+                  <p
+                    class="font-black text-lg brand text-brand"
+                    x-text="formatPrice(variantPrice(p))"
+                  ></p>
+                </div>
+                <button
+                  @click.stop="openProductModal(p)"
+                  class="btn-cart px-4 py-2 text-white text-sm flex items-center gap-1.5"
+                >
+                  <span>+</span> Escolher
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:border-pink-500/40 transition">
-            <p class="text-4xl font-black brand grad-text-2">24h</p>
-            <p class="text-white/40 text-sm mt-1">Resposta</p>
+        </template>
+      </div>
+      <div
+        x-show="!productsLoaded"
+        class="empty-products mt-8 rounded-2xl border border-neutral-200 bg-white p-8 text-center shadow-sm"
+      >
+        <p class="brand text-xl font-extrabold text-neutral-950">
+          Carregando produtos...
+        </p>
+        <p class="mt-2 text-sm text-neutral-500">
+          Preparando os destaques do catálogo.
+        </p>
+      </div>
+      <div
+        x-show="productsLoaded && productsError"
+        class="empty-products mt-8 rounded-2xl border border-neutral-200 bg-white p-8 text-center shadow-sm"
+      >
+        <p class="brand text-xl font-extrabold text-neutral-950">
+          Não foi possível carregar os produtos.
+        </p>
+        <p class="mt-2 text-sm text-neutral-500">
+          Verifique o arquivo de produtos e tente novamente.
+        </p>
+      </div>
+      <div
+        x-show="productsLoaded && !productsError && filteredProducts.length === 0"
+        class="empty-products mt-8 rounded-2xl border border-neutral-200 bg-white p-8 text-center shadow-sm"
+      >
+        <p
+          class="brand text-xl font-extrabold text-neutral-950"
+          x-text="activeCategory === 'Mais vendidos' ? 'Nenhum mais vendido no momento.' : 'Nenhum produto nesta categoria.'"
+        ></p>
+        <p class="mt-2 text-sm text-neutral-500">
+          Em breve novos itens selecionados aparecerão por aqui.
+        </p>
+      </div>
+    </section>
+
+    <!-- ══════════════ CONTATO ══════════════ -->
+    <section
+      id="contato"
+      class="py-20 px-6 relative overflow-hidden bg-white border-y border-neutral-200"
+    >
+      <div class="max-w-5xl mx-auto relative z-10">
+        <div class="max-w-3xl mx-auto text-center space-y-8">
+          <div class="space-y-5">
+            <p
+              class="text-neutral-500 text-sm font-bold uppercase tracking-widest"
+            >
+              Colorauta Gráfica e Papelaria
+            </p>
+            <h2 class="text-4xl font-extrabold brand text-neutral-950">
+              Acabamento profissional para sua marca aparecer melhor.
+            </h2>
+            <p class="text-neutral-600 leading-relaxed">
+              Somos uma gráfica e papelaria focada em materiais impressos com
+              boa apresentação, cores consistentes e atendimento direto.
+            </p>
+            <p class="text-neutral-600 leading-relaxed">
+              Escolha os produtos no catálogo ou fale direto pelo WhatsApp para
+              tirar dúvidas, combinar prazos e enviar sua arte.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 pt-2">
+              <a
+                href="https://wa.me/5521986473364"
+                target="_blank"
+                class="btn-primary inline-flex items-center gap-2 px-6 py-3 text-white"
+              >
+                <span>📲</span> Fale pelo WhatsApp
+              </a>
+              <a
+                href="mailto:contato@colorauta.com.br"
+                class="secondary-link px-6 py-3 rounded-xl border border-neutral-300 text-neutral-800 transition font-bold inline-flex items-center gap-2"
+              >
+                <span>📧</span> E-mail
+              </a>
+            </div>
+            <div
+              class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-neutral-500 text-sm font-semibold pt-3"
+            ></div>
           </div>
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:border-blue-500/40 transition">
-            <p class="text-4xl font-black brand" style="background:linear-gradient(90deg,#FFD600,#FF6B00);-webkit-background-clip:text;-webkit-text-fill-color:transparent">+50</p>
-            <p class="text-white/40 text-sm mt-1">Produtos</p>
-          </div>
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:border-yellow-500/40 transition">
-            <p class="text-4xl font-black brand" style="background:linear-gradient(90deg,#00F0FF,#7B2FFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent">5★</p>
-            <p class="text-white/40 text-sm mt-1">Google</p>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div class="contact-card">
+              <span>🖨️</span>
+              <strong>Impressão</strong>
+              <p>Papelaria, panfletos e materiais comerciais.</p>
+            </div>
+            <div class="contact-card">
+              <span>🏷️</span>
+              <strong>Visual</strong>
+              <p>Banners, adesivos, etiquetas e comunicação visual.</p>
+            </div>
+            <div class="contact-card">
+              <span>🎁</span>
+              <strong>Brindes</strong>
+              <p>Produtos personalizados para eventos e empresas.</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ══════════════ CONTATO ══════════════ -->
-  <section id="contato" class="py-20 px-6 max-w-4xl mx-auto text-center">
-    <p class="text-white/40 text-sm font-medium uppercase tracking-widest mb-2">Fale Conosco</p>
-    <h2 class="text-4xl font-extrabold brand mb-4">Pronto para <span class="grad-text">colorir</span> sua ideia?</h2>
-    <p class="text-white/40 mb-10 max-w-md mx-auto">Entre em contato pelo WhatsApp ou envie uma mensagem. Respondemos rapidinho!</p>
-    <div class="flex flex-wrap justify-center gap-4">
-      <a href="https://wa.me/5521986473364" target="_blank" class="btn-primary px-8 py-4 text-white text-base flex items-center gap-2">
-        <span>📲</span> WhatsApp
-      </a>
-      <a href="mailto:contato@colorauta.com.br" class="px-8 py-4 rounded-xl border border-white/20 text-white/70 hover:bg-white/5 transition font-semibold flex items-center gap-2">
-        <span>📧</span> E-mail
-      </a>
-    </div>
-    <div class="mt-12 flex justify-center gap-6 text-white/20 text-sm">
-      <span>📍 Rio de Janeiro, RJ</span>
-      <span>·</span>
-      <span>⏰ Seg–Sab 8h–20h</span>
-    </div>
-  </section>
+    <!-- ══════════════ FOOTER ══════════════ -->
+    <footer
+      class="border-t border-neutral-200 py-8 px-6 text-center text-neutral-500 text-sm bg-white"
+    >
+      <p class="brand text-base font-black text-neutral-950 mb-3">COLORAUTA</p>
 
-  <!-- ══════════════ FOOTER ══════════════ -->
-  <footer class="border-t border-white/5 py-8 px-6 text-center text-white/20 text-sm">
-    <p class="brand text-base font-black grad-text mb-1">COLORAUTA</p>
-    <p>© 2026 Colorauta Gráfica. Todos os direitos reservados.</p>
-    <p class="mt-2">
-      Criado por:
-      <a href="https://www.endlesstecno.com" target="_blank" rel="noopener noreferrer" class="text-white/40 hover:text-white transition">Endless</a>
-    </p>
-  </footer>
+      <div class="footer-socials" aria-label="Redes sociais">
+        <a
+          href="https://www.instagram.com/colorauta/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram da Colorauta"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm5.25-3.1a.85.85 0 1 1 0 1.7.85.85 0 0 1 0-1.7Z"
+            />
+          </svg>
+        </a>
+        <a
+          href="https://wa.me/5521986473364"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp da Colorauta"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12.04 2a9.82 9.82 0 0 0-8.49 14.77L2.2 22l5.37-1.3A9.83 9.83 0 1 0 12.04 2Zm0 2a7.83 7.83 0 1 1-3.76 14.7l-.35-.2-2.87.7.72-2.78-.23-.37A7.83 7.83 0 0 1 12.04 4Zm-3.3 4.18c-.18 0-.48.07-.73.35-.25.27-.96.94-.96 2.3 0 1.35.98 2.65 1.12 2.83.14.18 1.9 3.04 4.72 4.14 2.34.92 2.82.74 3.33.7.51-.05 1.65-.68 1.88-1.34.23-.65.23-1.22.16-1.34-.07-.12-.25-.18-.53-.32-.28-.14-1.65-.82-1.9-.91-.26-.1-.45-.14-.64.14-.18.27-.73.91-.9 1.1-.16.18-.33.2-.6.06-.28-.14-1.17-.43-2.23-1.38-.82-.73-1.38-1.64-1.54-1.92-.16-.27-.02-.42.12-.56.13-.13.28-.33.42-.49.14-.17.18-.28.28-.47.09-.18.04-.35-.03-.49-.07-.14-.62-1.54-.87-2.1-.23-.54-.47-.46-.65-.47h-.53Z"
+            />
+          </svg>
+        </a>
+      </div>
 
-  <script src="main.js"></script>
-</body>
+      <div class="footer-payments" aria-label="Formas de pagamento">
+        <span>Aceitamos todos os tipos de pagamentos.</span>
+        <div class="payment-icons">
+          <span title="Dinheiro">💵 Dinheiro</span>
+          <span title="Mastercard">Mastercard</span>
+          <span title="Visa">Visa</span>
+          <span title="Transferência bancária">🏦 Transferência</span>
+        </div>
+      </div>
+
+      <p class="payment-text mb-2">Entregamos em todo o Brasil. 🚚 📦</p>
+      <p class="payment-text mb-2">📍 Rio de Janeiro, RJ</p>
+
+      <p>© 2026 Colorauta Gráfica. Todos os direitos reservados.</p>
+      <p class="mt-2">
+        Criado por:
+        <a
+          href="https://www.endlesstecno.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="footer-link text-neutral-700 transition"
+          >Endless</a
+        >
+      </p>
+    </footer>
+
+    <script src="main.js?v=20260829-2102"></script>
+  </body>
 </html>

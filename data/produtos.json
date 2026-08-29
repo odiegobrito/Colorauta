@@ -1,0 +1,429 @@
+{
+  "categories": [
+    "Impressão",
+    "Adesivos",
+    "Banners",
+    "Festas",
+    "Presentes",
+    "Papelaria",
+    "Corporativas",
+    "Escolar"
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Cartão de Visita",
+      "category": "Papelaria",
+      "emoji": "🪪",
+      "image": "images/cartao.png",
+      "description": "Cartões em couchê 300g com opções de quantidade e impressão",
+      "color": "#7B2FFF",
+      "color2": "#FF2D78",
+      "badge": "🔥 Mais Vendido",
+      "featured": true,
+      "bestSeller": true,
+      "deliveryTime": "3 a 5 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": [
+        "Papel couchê 300g",
+        "Quantidades de 100 a 2000 unidades",
+        "Opções só frente ou frente e verso",
+        "Acabamento profissional",
+        "Ideal para apresentação comercial"
+      ],
+      "oldPrice": null,
+      "variants": [
+        { "label": "100 un. Só frente", "price": 2490 },
+        { "label": "100 un. Frente e Verso", "price": 3490 },
+        { "label": "250 un. Só frente", "price": 3990 },
+        { "label": "250 un. Frente e Verso", "price": 4990 },
+        { "label": "500 un. Só frente", "price": 5490 },
+        { "label": "500 un. Frente e Verso", "price": 6490 },
+        { "label": "1000 un. Só frente", "price": 6490 },
+        { "label": "1000 un. Frente e Verso", "price": 7990 },
+        { "label": "2000 un. Só frente", "price": 11990 },
+        { "label": "2000 un. Frente e Verso", "price": 14990 }
+      ],
+      "selectedVariant": "1000 un. Só frente"
+    },
+    {
+      "id": 2,
+      "name": "Banner Lona 1x2m",
+      "category": "Banners",
+      "emoji": "🏷️",
+      "image": "images/banner.jpg",
+      "description": "Impressão digital, acabamento com ilhoses",
+      "color": "#FF6B00",
+      "color2": "#FFD600",
+      "badge": null,
+      "featured": true,
+      "bestSeller": true,
+      "deliveryTime": "2 a 4 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": [
+        "Lona resistente para uso interno ou externo",
+        "Acabamento com ilhoses ou bainhas",
+        "Impressão digital em alta definição"
+      ],
+      "oldPrice": null,
+      "variants": [
+        { "label": "Com Ilhoses", "price": 7990 },
+        { "label": "Com Bainhas", "price": 8490 }
+      ],
+      "selectedVariant": "Com Ilhoses"
+    },
+    {
+      "id": 3,
+      "name": "Adesivo Vinil",
+      "category": "Adesivos",
+      "emoji": "🏷️",
+      "image": "images/adesivo.jpg",
+      "description": "Corte especial, impressão UV",
+      "color": "#00B4FF",
+      "color2": "#7B2FFF",
+      "badge": "🆕 Novo",
+      "featured": true,
+      "bestSeller": true,
+      "deliveryTime": "3 a 6 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": [
+        "Vinil adesivo personalizado",
+        "Opções em A4, A3 e A2",
+        "Indicado para etiquetas, decoração e comunicação visual"
+      ],
+      "oldPrice": null,
+      "variants": [
+        { "label": "A4", "price": 2500 },
+        { "label": "A3", "price": 4200 },
+        { "label": "A2", "price": 7500 }
+      ],
+      "selectedVariant": "A4"
+    },
+    {
+      "id": 4,
+      "name": "Flyer 14x20",
+      "category": "Impressão",
+      "emoji": "📄",
+      "image": "images/panfleto.png",
+      "description": "Couchê 90g, impressão colorida",
+      "color": "#FF2D78",
+      "color2": "#FF6B00",
+      "badge": "💥 Oferta",
+      "featured": true,
+      "bestSeller": true,
+      "deliveryTime": "3 a 5 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": [
+        "Formato 14x20 cm",
+        "Papel couchê 90g",
+        "Opções de impressão só frente ou frente e verso"
+      ],
+      "oldPrice": null,
+      "variants": [
+        { "label": "1000 un. Só frente", "price": 3990 },
+        { "label": "1000 un. Frente e Verso", "price": 4990 },
+        { "label": "2500 un. Só frente", "price": 2980 },
+        { "label": "2500 un. Frente e Verso", "price": 7490 },
+        { "label": "5000 un. Só frente", "price": 9990 },
+        { "label": "5000 un. Frente e Verso", "price": 12490 }
+      ],
+      "selectedVariant": "1000 un. Só frente"
+    },
+    {
+      "id": 5,
+      "name": "Caneca Cerâmica",
+      "category": "Festas",
+      "emoji": "☕",
+      "description": "Sublimação full, capacidade 325ml",
+      "color": "#00F0FF",
+      "color2": "#00B4FF",
+      "badge": null,
+      "featured": false,
+      "deliveryTime": "5 a 7 dias úteis",
+      "availability": "Sob consulta",
+      "details": ["Sublimação full color", "Capacidade 325ml"],
+      "oldPrice": null,
+      "variants": [
+        { "label": "Branca", "price": 3500 },
+        { "label": "Mágica", "price": 4500 }
+      ],
+      "selectedVariant": "Branca"
+    },
+    {
+      "id": 6,
+      "name": "Camiseta Estampada",
+      "category": "Festas",
+      "emoji": "👕",
+      "description": "100% algodão, estampa DTF full color",
+      "color": "#7B2FFF",
+      "color2": "#FF2D78",
+      "badge": null,
+      "featured": false,
+      "deliveryTime": "5 a 8 dias úteis",
+      "availability": "Sob consulta",
+      "details": ["Estampa DTF full color", "Tamanhos P ao GG"],
+      "oldPrice": null,
+      "variants": [
+        { "label": "P", "price": 6500 },
+        { "label": "M", "price": 6500 },
+        { "label": "G", "price": 6500 },
+        { "label": "GG", "price": 7500 }
+      ],
+      "selectedVariant": "M"
+    },
+    {
+      "id": 7,
+      "name": "Folder A4 Dobrado",
+      "category": "Papelaria",
+      "emoji": "📰",
+      "description": "Couchê 150g, dobra dupla ou tripla",
+      "color": "#FFD600",
+      "color2": "#FF6B00",
+      "badge": null,
+      "featured": false,
+      "deliveryTime": "4 a 7 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": ["Couchê 150g", "Dobra dupla ou tripla"],
+      "oldPrice": null,
+      "variants": [
+        { "label": "Dupla Só frente", "price": 2990 },
+        { "label": "Dupla Frente e Verso", "price": 3990 },
+        { "label": "Tripla Só frente", "price": 3490 },
+        { "label": "Tripla Frente e Verso", "price": 4490 }
+      ],
+      "selectedVariant": "Dupla Só frente"
+    },
+    {
+      "id": 8,
+      "name": "Lona Impressa 2x3m",
+      "category": "Banners",
+      "emoji": "🖼️",
+      "image": "images/banner.jpg",
+      "description": "Alta definição, resistente ao sol",
+      "color": "#FF6B00",
+      "color2": "#FF2D78",
+      "badge": "⭐ Premium",
+      "featured": true,
+      "bestSeller": true,
+      "deliveryTime": "3 a 5 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": [
+        "Lona em alta definição",
+        "Boa resistência ao sol",
+        "Indicada para fachadas, eventos e promoções"
+      ],
+      "oldPrice": null,
+      "variants": [
+        { "label": "Com Ilhoses", "price": 14990 },
+        { "label": "Sem Acabamento", "price": 13490 }
+      ],
+      "selectedVariant": "Com Ilhoses"
+    },
+    {
+      "id": 9,
+      "name": "Etiqueta Adesiva",
+      "category": "Adesivos",
+      "emoji": "🔖",
+      "description": "Rolo c/ 1000 un., impressão colorida",
+      "color": "#00B4FF",
+      "color2": "#00F0FF",
+      "badge": null,
+      "featured": false,
+      "deliveryTime": "4 a 7 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": ["Rolo com 1000 unidades", "Formatos redondo, retangular ou personalizado"],
+      "oldPrice": null,
+      "variants": [
+        { "label": "Redonda", "price": 5990 },
+        { "label": "Retangular", "price": 5990 },
+        { "label": "Personalizada", "price": 7990 }
+      ],
+      "selectedVariant": "Redonda"
+    },
+    {
+      "id": 10,
+      "name": "Envelope Personalizado",
+      "category": "Papelaria",
+      "emoji": "✉️",
+      "description": "Papel offset 90g, impressão colorida",
+      "color": "#7B2FFF",
+      "color2": "#00B4FF",
+      "badge": null,
+      "featured": false,
+      "deliveryTime": "4 a 7 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": ["Papel offset 90g", "Modelos carta e ofício"],
+      "oldPrice": null,
+      "variants": [
+        { "label": "Carta Só frente", "price": 1990 },
+        { "label": "Carta Frente e Verso", "price": 2490 },
+        { "label": "Ofício Só frente", "price": 2290 },
+        { "label": "Ofício Frente e Verso", "price": 2790 }
+      ],
+      "selectedVariant": "Carta Só frente"
+    },
+    {
+      "id": 11,
+      "name": "Squeeze Plástico",
+      "category": "Festas",
+      "emoji": "🧴",
+      "description": "600ml, impressão silk ou digital",
+      "color": "#FF2D78",
+      "color2": "#7B2FFF",
+      "badge": null,
+      "featured": false,
+      "deliveryTime": "5 a 8 dias úteis",
+      "availability": "Sob consulta",
+      "details": ["600ml", "Impressão silk ou digital"],
+      "oldPrice": null,
+      "variants": [
+        { "label": "Silk", "price": 2800 },
+        { "label": "Digital", "price": 3200 }
+      ],
+      "selectedVariant": "Silk"
+    },
+    {
+      "id": 12,
+      "name": "Calendário de Mesa",
+      "category": "Papelaria",
+      "emoji": "📅",
+      "description": "12 folhas + capa, laminação fosca",
+      "color": "#FFD600",
+      "color2": "#00F0FF",
+      "badge": "🎄 Natal",
+      "featured": true,
+      "deliveryTime": "5 a 7 dias úteis",
+      "availability": "Disponível por temporada",
+      "details": [
+        "12 folhas + capa",
+        "Laminação fosca",
+        "Boa opção para brindes corporativos"
+      ],
+      "oldPrice": null,
+      "variants": [
+        { "label": "Horizontal", "price": 4500 },
+        { "label": "Vertical", "price": 4500 }
+      ],
+      "selectedVariant": "Horizontal"
+    },
+    {
+      "id": 13,
+      "name": "Papel Timbrado",
+      "category": "Corporativas",
+      "emoji": "📄",
+      "description": "Papel timbrado para propostas, contratos e comunicação empresarial",
+      "color": "#7B2FFF",
+      "color2": "#00B4FF",
+      "badge": "🏢 Corporativo",
+      "featured": true,
+      "deliveryTime": "3 a 5 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": [
+        "Papel offset 90g",
+        "Impressão colorida com identidade da empresa",
+        "Indicado para documentos, propostas e comunicados"
+      ],
+      "oldPrice": null,
+      "variants": [
+        { "label": "100 un. Só frente", "price": 3990 },
+        { "label": "250 un. Só frente", "price": 6990 },
+        { "label": "500 un. Só frente", "price": 10990 },
+        { "label": "1000 un. Só frente", "price": 17990 },
+        { "label": "2000 un. Só frente", "price": 32990 }
+      ],
+      "selectedVariant": "500 un. Só frente"
+    },
+    {
+      "id": 14,
+      "name": "Convite Personalizado",
+      "category": "Festas",
+      "emoji": "🎉",
+      "description": "Convites para aniversários, chás, eventos e comemorações",
+      "color": "#FF2D78",
+      "color2": "#FFD600",
+      "badge": "🎈 Festas",
+      "featured": true,
+      "deliveryTime": "4 a 6 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": [
+        "Impressão colorida",
+        "Opções de papel e acabamento",
+        "Ideal para festas infantis, eventos e celebrações"
+      ],
+      "oldPrice": null,
+      "variants": [
+        { "label": "100 un. Só frente", "price": 4990 },
+        { "label": "100 un. Frente e Verso", "price": 6490 },
+        { "label": "250 un. Só frente", "price": 8990 },
+        { "label": "250 un. Frente e Verso", "price": 10990 },
+        { "label": "500 un. Só frente", "price": 15990 },
+        { "label": "500 un. Frente e Verso", "price": 18990 },
+        { "label": "1000 un. Só frente", "price": 28990 },
+        { "label": "1000 un. Frente e Verso", "price": 34990 }
+      ],
+      "selectedVariant": "100 un. Só frente"
+    },
+    {
+      "id": 15,
+      "name": "Tag para Presente",
+      "category": "Presentes",
+      "emoji": "🎁",
+      "description": "Tags personalizadas para embalagens, lembranças e presentes",
+      "color": "#00B4FF",
+      "color2": "#FF2D78",
+      "badge": "🎁 Presente",
+      "featured": true,
+      "deliveryTime": "3 a 5 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": [
+        "Couchê com impressão colorida",
+        "Ótimo para lembrancinhas e embalagens especiais",
+        "Pode ser usado em datas comemorativas e eventos"
+      ],
+      "oldPrice": null,
+      "variants": [
+        { "label": "100 un. Só frente", "price": 2990 },
+        { "label": "100 un. Frente e Verso", "price": 3990 },
+        { "label": "250 un. Só frente", "price": 5490 },
+        { "label": "250 un. Frente e Verso", "price": 6990 },
+        { "label": "500 un. Só frente", "price": 8990 },
+        { "label": "500 un. Frente e Verso", "price": 10990 },
+        { "label": "1000 un. Só frente", "price": 15990 },
+        { "label": "1000 un. Frente e Verso", "price": 19990 }
+      ],
+      "selectedVariant": "250 un. Só frente"
+    },
+    {
+      "id": 16,
+      "name": "Cartão Fidelidade",
+      "category": "Corporativas",
+      "emoji": "💼",
+      "description": "Cartões para programas de fidelidade, atendimento e relacionamento",
+      "color": "#FFD600",
+      "color2": "#FF6B00",
+      "badge": null,
+      "featured": true,
+      "deliveryTime": "3 a 5 dias úteis",
+      "availability": "Disponível para orçamento",
+      "details": [
+        "Formato prático para carteira",
+        "Ideal para salões, lojas, delivery e prestadores de serviço",
+        "Pode ser feito só frente ou frente e verso"
+      ],
+      "oldPrice": null,
+      "variants": [
+        { "label": "100 un. Só frente", "price": 2490 },
+        { "label": "100 un. Frente e Verso", "price": 3490 },
+        { "label": "250 un. Só frente", "price": 3990 },
+        { "label": "250 un. Frente e Verso", "price": 4990 },
+        { "label": "500 un. Só frente", "price": 5490 },
+        { "label": "500 un. Frente e Verso", "price": 6490 },
+        { "label": "1000 un. Só frente", "price": 6490 },
+        { "label": "1000 un. Frente e Verso", "price": 7990 },
+        { "label": "2000 un. Só frente", "price": 11990 },
+        { "label": "2000 un. Frente e Verso", "price": 14990 }
+      ],
+      "selectedVariant": "500 un. Só frente"
+    }
+  ]
+}

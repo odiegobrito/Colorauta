@@ -1,0 +1,22 @@
+# Dependencias e ambiente local
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Arquivos temporarios
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Saidas de testes e builds locais
+test-results/
+playwright-report/
+coverage/
+dist/
+build/
+
+# Pacotes gerados para hospedagem
+publicacao-hostinger-*/
+*.zip
